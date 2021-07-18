@@ -34,27 +34,27 @@ class_names = ["T-shirt/top", "Trouser", "Pullover", "Dress", "Coat",
 
 # classification multi-layer perceptron with 2 hidden layers
 # Keras Sequential model
-model = keras.models.Sequential()
+# model = keras.models.Sequential()
 # 1st layer, convert each image to 1-D array
-model.add(keras.layers.Flatten(input_shape=[28, 28]))
+# model.add(keras.layers.Flatten(input_shape=[28, 28]))
 # 2nd layer, Dense hidden layer, 300 neurons
 # ReLU activation function
-model.add(keras.layers.Dense(300, activation="relu"))
+# model.add(keras.layers.Dense(300, activation="relu"))
 # 3rd layer, Dense hidden layer, 100 neurons
 # ReLU activation function
-model.add(keras.layers.Dense(100, activation="relu"))
+# model.add(keras.layers.Dense(100, activation="relu"))
 # 4th layer, Dense output layer, 10 neurons (one per class)
 # softmax activation function
-model.add(keras.layers.Dense(10, activation="softmax"))
+# model.add(keras.layers.Dense(10, activation="softmax"))
 
 # alternate syntax
 
-#model = keras.models.Sequential([
-#    keras.layers.Flatten(input_shape=[28, 28]),
-#    keras.layers.Dense(300, activation="relu"),
-#    keras.layers.Dense(100, activation="relu"),
-#    keras.layers.Dense(10, activation="softmax")
-#])
+model = keras.models.Sequential([
+    keras.layers.Flatten(input_shape=[28, 28]),
+    keras.layers.Dense(300, activation="relu"),
+    keras.layers.Dense(100, activation="relu"),
+    keras.layers.Dense(10, activation="softmax")
+])
 
 print(model.summary())
 
@@ -63,10 +63,11 @@ model.compile(loss="sparse_categorical_crossentropy",
     optimizer=keras.optimizers.SGD(lr=0.01),
     metrics=["accuracy"])
 
-history = model.fit(X_train, y_train, epochs=5,
+history = model.fit(X_train, y_train, epochs=30,
 validation_data=(X_valid, y_valid))
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 pd.DataFrame(history.history).plot(figsize=(8, 5))
@@ -74,3 +75,13 @@ plt.grid(True)
 # set vertical range to [0,1]
 plt.gca().set_ylim(0, 1)
 plt.show()
+
+X_new = X_test[:3]
+y_proba = model.predict(X_new)
+print(y_proba.round(2))
+
+y_pred = model.predict_classes(X_new)
+np.array(class_names)[y_pred]
+
+y_new = y_test[:3]
+print(y_new)
